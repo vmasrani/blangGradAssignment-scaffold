@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vmasrani/blangGradAssignment-scaffold.png?branch=master)](https://travis-ci.org/YOUR_USER_NAME/REPO_NAME)
 # Assignment on Blang
 
 ## Prerequisites

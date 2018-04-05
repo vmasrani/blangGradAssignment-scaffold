@@ -30,7 +30,18 @@ public class PermutationSampler implements Sampler {
 
   @Override
   public void execute(Random rand) {
-    // Fill this. 
+	int n_comp = this.permutation.componentSize();
+    int i = rand.nextInt(n_comp);
+    int j = rand.nextInt(n_comp);
+    
+    double logBefore = logDensity();
+    Collections.swap(this.permutation.getConnections(), i, j);
+    double logAfter = logDensity();
+    boolean accept = Generators.bernoulli(rand, Math.min(1.0, Math.exp(logAfter - logBefore)));
+    // If not accept, swap back	    	
+    if (!accept) {
+    		Collections.swap(this.permutation.getConnections(), i, j);
+	}
   }
   
   private double logDensity() {

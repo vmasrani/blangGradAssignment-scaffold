@@ -1,5 +1,6 @@
 package matchings;
 
+import java.util.Collections;
 import java.util.List;
 
 import bayonet.distributions.Multinomial;
@@ -29,7 +30,34 @@ public class BipartiteMatchingSampler implements Sampler {
 
   @Override
   public void execute(Random rand) {
-    // Fill this. 
+	  int n_comp = this.matching.componentSize();
+	  int i = rand.nextInt(n_comp);
+	  int edge = this.matching.getConnections().get(i);
+	  List<Integer> free = this.matching.free2();
+	  
+	  double logBefore = logDensity();
+	  
+	  if (edge == BipartiteMatching.FREE) {
+		  int j = rand.nextInt(free.size());
+		  this.matching.getConnections().set(i, free.get(j));
+	  }
+	  else {
+		  int j = rand.nextInt(free.size() + 1);
+		  if(j == free.size()) {
+			  this.matching.getConnections().set(i, BipartiteMatching.FREE);
+		  }
+		  else {
+			  this.matching.getConnections().set(i, free.get(j));
+		  }
+	  }
+	  
+	  double logAfter = logDensity();  
+	  boolean accept = Generators.bernoulli(rand, Math.min(1.0, Math.exp(logAfter - logBefore)));
+	  // If not accept, swap back	    	
+	  if (!accept) {
+		  this.matching.getConnections().set(i, edge);
+	}
+
   }
   
   private double logDensity() {
